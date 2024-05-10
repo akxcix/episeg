@@ -9,12 +9,8 @@ from torch.utils.data import DataLoader
 import models
 import train
 
-if 'episeg' in os.path.basename(os.getcwd()):
-    BASE_DIR = os.getcwd()
-else:
-    BASE_DIR = os.path.join(os.getcwd(), 'episeg')
-
 DATA_LINK = "https://andrewjanowczyk.com/wp-static/epi.tgz"
+BASE_DIR = os.path.join(os.path.dirname(__file__), '..')
 IMAGE_DIR = os.path.join(BASE_DIR, "data")
 MASK_DIR = os.path.join(IMAGE_DIR, "masks")
 TRAIN_IMAGE_DIR = os.path.join(IMAGE_DIR, "train/images")

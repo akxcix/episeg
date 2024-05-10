@@ -7,6 +7,7 @@ def train_model(model, data_loader, epochs, optimizer, criterion, device, checkp
     model.train()
 
     best_loss = float('inf')
+    logging.info('Starting training')
     for epoch in range(epochs):
         running_loss = 0.0
         for images, masks in data_loader:
