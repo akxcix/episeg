@@ -11,7 +11,7 @@ def prepare_datasets(data_link, image_dir, mask_dir, train_image_dir, train_mask
         logging.info("Downloading and extracting dataset...")
         os.makedirs(image_dir, exist_ok=True)
         subprocess.run([
-            "curl", "-L", data_link, "-o", os.path.join(image_dir, "epi.tgz")
+            "curl", "-k", "-L", data_link, "-o", os.path.join(image_dir, "epi.tgz")
         ], check=True)
         subprocess.run(["tar", "-xzvf", os.path.join(image_dir, "epi.tgz"), "-C", image_dir], check=True)
         os.remove(os.path.join(image_dir, "epi.tgz"))
