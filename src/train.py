@@ -26,7 +26,9 @@ def train_model(model, data_loader, epochs, optimizer, criterion, device, checkp
         
         epoch_loss = running_loss / len(data_loader.dataset)
         print(f'Epoch {epoch+1}/{epochs}, Loss: {epoch_loss:.4f}')
-        save_checkpoint(epoch, model, optimizer, epoch_loss, checkpoint_path)
+        if epoch_loss < best_loss:
+            best_loss = epoch_loss
+            save_checkpoint(epoch, model, optimizer, epoch_loss, checkpoint_path)
 
     logging.info('Training complete')
 
