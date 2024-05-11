@@ -1,6 +1,7 @@
 import logging
 import os
 import torch
+from tqdm import tqdm
 
 def train_model(model, data_loader, epochs, optimizer, criterion, device, checkpoint_path):
     model.to(device)
@@ -8,7 +9,7 @@ def train_model(model, data_loader, epochs, optimizer, criterion, device, checkp
 
     best_loss = float('inf')
     logging.info('Starting training')
-    for epoch in range(epochs):
+    for epoch in tqdm(range(epochs)):
         running_loss = 0.0
         for images, masks in data_loader:
             images = images.to(device)
@@ -24,8 +25,8 @@ def train_model(model, data_loader, epochs, optimizer, criterion, device, checkp
             running_loss += loss.item() * images.size(0)
         
         epoch_loss = running_loss / len(data_loader.dataset)
-        logging.info(f'Epoch {epoch+1}/{epochs}, Loss: {epoch_loss:.4f}')
-        save_checkpoint(epoch, model, optimizer, best_loss, checkpoint_path)
+        print(f'Epoch {epoch+1}/{epochs}, Loss: {epoch_loss:.4f}')
+        save_checkpoint(epoch, model, optimizer, epoch_loss, checkpoint_path)
 
     logging.info('Training complete')
 
