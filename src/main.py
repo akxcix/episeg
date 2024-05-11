@@ -38,6 +38,7 @@ def main(mode = 'train'):
 
     logging.info("preparing datasets...")
     data.prepare_datasets(DATA_LINK, IMAGE_DIR, MASK_DIR, TRAIN_IMAGE_DIR, TRAIN_MASK_DIR, TEST_DIR)
+    data.create_h5_files(HDF5_FILE_PATH, TRAIN_IMAGE_DIR, TRAIN_MASK_DIR)
 
     logging.info("loading dataset...")
     ds = dataset.SegmentationDataset(HDF5_FILE_PATH)

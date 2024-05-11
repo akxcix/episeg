@@ -40,7 +40,12 @@ def prepare_datasets(data_link, image_dir, mask_dir, train_image_dir, train_mask
     logging.info("images and masks sorted.")
 
 def create_h5_files(hdf5_file_path, train_image_dir, train_mask_dir):
-    logging.info("creating hdf5 file with images and masks...")
+    logging.info("Preparing to create hdf5 file with images and masks...")
+    
+    # Ensure the directory for the hdf5 file exists
+    hdf5_dir = os.path.dirname(hdf5_file_path)
+    os.makedirs(hdf5_dir, exist_ok=True)
+
     with h5py.File(hdf5_file_path, 'w') as h5f:
         logging.info("hdf5 file created.")
         logging.info("creating datasets...")
