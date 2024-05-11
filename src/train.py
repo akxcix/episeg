@@ -41,3 +41,30 @@ def save_checkpoint(epoch, model, optimizer, loss, checkpoint_path):
         os.makedirs(checkpoint_dir)
     torch.save(state, checkpoint_path)
     logging.info(f"Checkpoint saved at epoch {epoch + 1} with loss {loss:.4f}")
+
+def load_checkpoint(model, optimizer, checkpoint_path, device):
+    if not os.path.exists(checkpoint_path):
+        return model, optimizer, 0, float('inf')
+
+    checkpoint = torch.load(checkpoint_path)
+    model.load_state_dict(checkpoint['state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer'])
+    epoch = checkpoint['epoch']
+    loss = checkpoint['loss']
+    model.to(device)
+    return model, optimizer, epoch, loss
+
+def evaluate_model(model, image, device):
+    model.to(device)
+    model.eval()
+
+    with torch.no_grad():
+        image = image.unsqueeze(0).to(device)
+        output = model(image)
+        output = torch.sigmoid(output)
+        # outputs = [(output > threshold).float() for threshold in thresholds]
+        # outputs_numpy = [output.cpu().numpy()[0, 0] for output in outputs]
+        # return outputs_numpy
+        # output = (output > 0.5).float()
+        return output.cpu().numpy()[0, 0]
+    

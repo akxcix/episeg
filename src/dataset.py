@@ -5,6 +5,7 @@ from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 from torchvision.transforms import functional as TF
+import logging
 
 class RandomTransforms:
     def __init__(self):
@@ -59,21 +60,45 @@ class SegmentationDataset(Dataset):
 
         return image, mask
     
-    def show_random_image(self):
-        idx = random.randint(0, len(self.image_keys) - 1)
-        image, mask = self.__getitem__(idx)
-
-        fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+    def plot_image(self, image, mask):
         image_display = transforms.ToPILImage()(image)
         mask_display = transforms.ToPILImage()(mask)
+
+        fig, ax = plt.subplots(1, 2, figsize=(12, 6))
         ax[0].imshow(image_display)
         ax[0].set_title('Image')
         ax[0].axis('off')
         ax[1].imshow(mask_display, cmap='gray')
         ax[1].set_title('Mask')
         ax[1].axis('off')
-
-        print(f"Image shape: {image.shape}")
-        print(f"Mask shape: {mask.shape}")
         plt.show()
 
+    def plot_with_pred(self, image, mask, pred, thresholds=[0.5]):
+        image_display = transforms.ToPILImage()(image)
+        mask_display = transforms.ToPILImage()(mask)
+
+        fig, ax = plt.subplots(1, 2+len(thresholds), figsize=(18, 6))
+        ax[0].imshow(image_display)
+        ax[0].set_title('Image')
+        ax[0].axis('off')
+        ax[1].imshow(mask_display, cmap='gray')
+        ax[1].set_title('Mask')
+        ax[1].axis('off')
+        for idx in range(len(thresholds)):
+            ax_idx = 2+idx
+            threshold = thresholds[idx]
+            masked_pred = (pred>threshold).astype(np.uint8)
+            pred_display = transforms.ToPILImage()(masked_pred)
+            ax[ax_idx].imshow(pred, cmap='gray')
+            ax[ax_idx].imshow(pred_display, cmap='gray')
+            ax[ax_idx].set_title(f'Prediction: {threshold}')
+            ax[ax_idx].axis('off')
+        plt.show()
+    
+    def show_image(self, idx=None):
+        if idx is None:
+            idx = random.randint(0, len(self.image_keys) - 1)
+
+        logging.debug(f"showing image at idx: {idx}")
+        image, mask = self.__getitem__(idx)
+        self.plot_image(image, mask)
